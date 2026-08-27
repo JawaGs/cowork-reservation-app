@@ -43,3 +43,11 @@ export function resolveMarket(acceptLanguage: string | null): Market {
 
   return FALLBACK_MARKET;
 }
+
+/** fecha en formato YYYY-MM-DD. Se construye con componentes locales para evitar
+ * el corrimiento de un día que produce parsear la fecha como UTC. */
+export function formatDate(fecha: string, market: Market): string {
+  const [anio, mes, dia] = fecha.split("-").map(Number);
+  const date = new Date(anio, mes - 1, dia);
+  return new Intl.DateTimeFormat(market.locale, { dateStyle: "long" }).format(date);
+}

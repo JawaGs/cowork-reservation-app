@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveMarket } from "./market";
+import { formatDate, resolveMarket } from "./market";
 
 describe("resolveMarket", () => {
   it("mapea región LATAM a CLP", () => {
@@ -56,5 +56,31 @@ describe("resolveMarket", () => {
       currency: "USD",
       locale: "en-US",
     });
+  });
+});
+
+describe("formatDate", () => {
+  it("formatea en español largo para el mercado LATAM", () => {
+    expect(formatDate("2026-09-05", { code: "LATAM", currency: "CLP", locale: "es-CL" })).toBe(
+      "5 de septiembre de 2026",
+    );
+  });
+
+  it("formatea en inglés largo para el mercado US", () => {
+    expect(formatDate("2026-09-05", { code: "US", currency: "USD", locale: "en-US" })).toBe(
+      "September 5, 2026",
+    );
+  });
+
+  it("formatea en francés largo para el mercado EU", () => {
+    expect(formatDate("2026-09-05", { code: "EU", currency: "EUR", locale: "fr-FR" })).toBe(
+      "5 septembre 2026",
+    );
+  });
+
+  it("no corre un día por interpretación UTC (caso límite: primer día del mes)", () => {
+    expect(formatDate("2026-01-01", { code: "US", currency: "USD", locale: "en-US" })).toBe(
+      "January 1, 2026",
+    );
   });
 });

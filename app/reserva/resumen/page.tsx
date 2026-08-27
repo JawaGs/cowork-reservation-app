@@ -8,7 +8,7 @@ import {
   validarReserva,
 } from "@/lib/disponibilidad";
 import { ESPACIOS_MOCK, TIPO_LABELS } from "@/lib/espacios";
-import { resolveMarket } from "@/lib/market";
+import { formatDate, resolveMarket } from "@/lib/market";
 import { formatPrice } from "@/lib/pricing";
 
 const MOTIVO_LABELS = {
@@ -77,7 +77,7 @@ export default async function ReservaResumenPage({
         <dt className="text-zinc-600">Tipo</dt>
         <dd>{TIPO_LABELS[espacio.tipo]}</dd>
         <dt className="text-zinc-600">Fecha</dt>
-        <dd>{fecha}</dd>
+        <dd>{formatDate(fecha, market)}</dd>
         <dt className="text-zinc-600">Horario</dt>
         <dd>
           {horaInicio} – {horaFin}

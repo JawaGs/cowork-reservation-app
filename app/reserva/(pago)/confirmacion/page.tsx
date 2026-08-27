@@ -11,7 +11,7 @@ import {
 import { ESPACIOS_MOCK, TIPO_LABELS } from "@/lib/espacios";
 import { VARIANT_COOKIE, type Variant } from "@/lib/experiment";
 import { flujoCondensado } from "@/lib/flujo";
-import { resolveMarket } from "@/lib/market";
+import { formatDate, resolveMarket } from "@/lib/market";
 import { formatPrice } from "@/lib/pricing";
 
 const MOTIVO_LABELS = {
@@ -76,7 +76,7 @@ export default async function ReservaConfirmacionPage({
       <main className="p-8">
         <h1 className="text-2xl font-semibold mb-2">¡Reserva confirmada!</h1>
         <p className="text-zinc-600 mb-6">
-          {espacio.nombre} · {fecha} · {horaInicio}–{horaFin}
+          {espacio.nombre} · {formatDate(fecha, market)} · {horaInicio}–{horaFin}
         </p>
         <ConfirmacionPago hrefPago={hrefPago} />
       </main>
@@ -94,7 +94,7 @@ export default async function ReservaConfirmacionPage({
         <dt className="text-zinc-600">Tipo</dt>
         <dd>{TIPO_LABELS[espacio.tipo]}</dd>
         <dt className="text-zinc-600">Fecha</dt>
-        <dd>{fecha}</dd>
+        <dd>{formatDate(fecha, market)}</dd>
         <dt className="text-zinc-600">Horario</dt>
         <dd>
           {horaInicio} – {horaFin}
