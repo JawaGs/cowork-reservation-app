@@ -6,8 +6,8 @@ import type { Espacio } from "@/lib/espacios";
 import type { Market } from "@/lib/market";
 
 const espacios: Espacio[] = [
-  { id: "1", nombre: "Providencia Hub", ubicacion: "Santiago", precioHoraUSD: 8, tipo: "escritorio-flexible" },
-  { id: "2", nombre: "Manhattan Desk", ubicacion: "Nueva York", precioHoraUSD: 18, tipo: "escritorio-flexible" },
+  { id: "1", nombre: "Providencia Hub", ubicacion: "Santiago", precioHoraUSD: 8, precioDiaUSD: 40, tipo: "escritorio-flexible", horariosOcupados: [] },
+  { id: "2", nombre: "Manhattan Desk", ubicacion: "Nueva York", precioHoraUSD: 18, precioDiaUSD: 90, tipo: "escritorio-flexible", horariosOcupados: [] },
 ];
 
 const market: Market = { code: "US", currency: "USD", locale: "en-US" };

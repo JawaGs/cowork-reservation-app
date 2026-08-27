@@ -9,7 +9,9 @@ const espacio: Espacio = {
   nombre: "Providencia Hub",
   ubicacion: "Santiago",
   precioHoraUSD: 10,
+  precioDiaUSD: 50,
   tipo: "escritorio-flexible",
+  horariosOcupados: [],
 };
 
 describe("EspacioCard", () => {
