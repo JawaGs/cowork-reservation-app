@@ -2,9 +2,16 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { DatePicker } from "@/components/DatePicker";
+import { TimeSelect } from "@/components/TimeSelect";
 import { calcularDuracionHoras, esDiaCompleto, validarReserva } from "@/lib/disponibilidad";
 import type { Espacio } from "@/lib/espacios";
 import type { PasoTrasFecha } from "@/lib/flujo";
+
+function hoyISO(): string {
+  const hoy = new Date();
+  return `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
+}
 
 interface ReservaFechaFormProps {
   espacio: Espacio;
@@ -29,6 +36,11 @@ export function ReservaFechaForm({ espacio, siguientePaso }: ReservaFechaFormPro
     const params = new URLSearchParams(searchParams.toString());
     params.set("espacioId", espacio.id);
     params.set(campo, valor);
+    // Si la nueva hora de inicio deja a la hora de fin ya elegida sin sentido,
+    // se limpia en vez de dejar un valor obsoleto que el <select> ya no puede mostrar.
+    if (campo === "horaInicio" && horaFin && horaFin <= valor) {
+      params.delete("horaFin");
+    }
     router.replace(`/reserva/fecha?${params.toString()}`);
   }
 
@@ -42,31 +54,23 @@ export function ReservaFechaForm({ espacio, siguientePaso }: ReservaFechaFormPro
     <div className="flex flex-col gap-4 max-w-sm">
       <label className="flex flex-col gap-1">
         Fecha
-        <input
-          type="date"
+        <DatePicker
           value={fecha}
-          onChange={(e) => actualizar("fecha", e.target.value)}
-          className="border px-2 py-1"
+          onChange={(valor) => actualizar("fecha", valor)}
+          minDate={hoyISO()}
         />
       </label>
-      <label className="flex flex-col gap-1">
-        Hora inicio
-        <input
-          type="time"
-          value={horaInicio}
-          onChange={(e) => actualizar("horaInicio", e.target.value)}
-          className="border px-2 py-1"
-        />
-      </label>
-      <label className="flex flex-col gap-1">
-        Hora fin
-        <input
-          type="time"
-          value={horaFin}
-          onChange={(e) => actualizar("horaFin", e.target.value)}
-          className="border px-2 py-1"
-        />
-      </label>
+      <TimeSelect
+        label="Hora inicio"
+        value={horaInicio}
+        onChange={(valor) => actualizar("horaInicio", valor)}
+      />
+      <TimeSelect
+        label="Hora fin"
+        value={horaFin}
+        onChange={(valor) => actualizar("horaFin", valor)}
+        min={horaInicio || undefined}
+      />
 
       {resultado && !resultado.valido && resultado.motivo && (
         <p className="text-red-600 text-sm">{MOTIVO_LABELS[resultado.motivo]}</p>
