@@ -89,6 +89,17 @@ export default async function ReservaResumenPage({
         <dt className="text-zinc-600">Precio total</dt>
         <dd className="font-medium">{formatPrice(precioUSD, market)}</dd>
       </dl>
+      <Link
+        href={`/reserva/pago?${new URLSearchParams({
+          espacioId: espacio.id,
+          fecha,
+          horaInicio,
+          horaFin,
+        }).toString()}`}
+        className="inline-block border rounded px-4 py-2 bg-black text-white"
+      >
+        Continuar a pago
+      </Link>
     </main>
   );
 }

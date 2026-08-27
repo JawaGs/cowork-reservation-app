@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { calcularDuracionHoras, esDiaCompleto, validarReserva } from "@/lib/disponibilidad";
 import type { Espacio } from "@/lib/espacios";
+import type { PasoTrasFecha } from "@/lib/flujo";
 
 interface ReservaFechaFormProps {
   espacio: Espacio;
+  siguientePaso: PasoTrasFecha;
 }
 
 const MOTIVO_LABELS = {
@@ -15,7 +17,7 @@ const MOTIVO_LABELS = {
   "rango-invalido": "La hora de término debe ser posterior a la hora de inicio.",
 } as const;
 
-export function ReservaFechaForm({ espacio }: ReservaFechaFormProps) {
+export function ReservaFechaForm({ espacio, siguientePaso }: ReservaFechaFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -77,7 +79,7 @@ export function ReservaFechaForm({ espacio }: ReservaFechaFormProps) {
 
       {resultado?.valido ? (
         <Link
-          href={`/reserva/resumen?${new URLSearchParams({
+          href={`/reserva/${siguientePaso}?${new URLSearchParams({
             espacioId: espacio.id,
             fecha,
             horaInicio,

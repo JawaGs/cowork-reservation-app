@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ConfirmacionPago } from "@/components/ConfirmacionPago";
@@ -9,6 +9,8 @@ import {
   validarReserva,
 } from "@/lib/disponibilidad";
 import { ESPACIOS_MOCK, TIPO_LABELS } from "@/lib/espacios";
+import { VARIANT_COOKIE, type Variant } from "@/lib/experiment";
+import { flujoCondensado } from "@/lib/flujo";
 import { resolveMarket } from "@/lib/market";
 import { formatPrice } from "@/lib/pricing";
 
@@ -59,15 +61,31 @@ export default async function ReservaConfirmacionPage({
     );
   }
 
+  const cookieStore = await cookies();
+  const variant = (cookieStore.get(VARIANT_COOKIE)?.value as Variant | undefined) ?? "base";
+  const condensado = flujoCondensado(variant);
+
   const headersList = await headers();
   const market = resolveMarket(headersList.get("accept-language"));
   const duracion = calcularDuracionHoras(horaInicio, horaFin);
   const precioUSD = calcularPrecioUSD(espacio, duracion);
   const hrefPago = `/reserva/pago?${params.toString()}`;
 
+  if (!condensado) {
+    return (
+      <main className="p-8">
+        <h1 className="text-2xl font-semibold mb-2">¡Reserva confirmada!</h1>
+        <p className="text-zinc-600 mb-6">
+          {espacio.nombre} · {fecha} · {horaInicio}–{horaFin}
+        </p>
+        <ConfirmacionPago hrefPago={hrefPago} />
+      </main>
+    );
+  }
+
   return (
     <main className="p-8">
-      <h1 className="text-2xl font-semibold mb-6">Confirmación de la reserva</h1>
+      <h1 className="text-2xl font-semibold mb-6">Resumen y confirmación de la reserva</h1>
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 max-w-sm mb-6">
         <dt className="text-zinc-600">Espacio</dt>
         <dd>{espacio.nombre}</dd>

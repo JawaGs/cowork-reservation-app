@@ -28,7 +28,7 @@ beforeEach(() => {
 
 describe("ReservaFechaForm", () => {
   it("actualiza la URL al cambiar la fecha", () => {
-    render(<ReservaFechaForm espacio={espacio} />);
+    render(<ReservaFechaForm espacio={espacio} siguientePaso="resumen" />);
     fireEvent.change(screen.getByLabelText("Fecha"), { target: { value: "2026-09-05" } });
     expect(replace).toHaveBeenCalledWith(
       expect.stringContaining("fecha=2026-09-05"),
@@ -42,7 +42,7 @@ describe("ReservaFechaForm", () => {
       horaInicio: "10:00",
       horaFin: "11:00",
     });
-    render(<ReservaFechaForm espacio={espacio} />);
+    render(<ReservaFechaForm espacio={espacio} siguientePaso="resumen" />);
     expect(screen.getByText(/ya está ocupado/i)).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Continuar" })).not.toBeInTheDocument();
   });
@@ -54,11 +54,25 @@ describe("ReservaFechaForm", () => {
       horaInicio: "10:00",
       horaFin: "12:00",
     });
-    render(<ReservaFechaForm espacio={espacio} />);
+    render(<ReservaFechaForm espacio={espacio} siguientePaso="resumen" />);
     expect(screen.getByText(/Duración: 2h/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Continuar" })).toHaveAttribute(
       "href",
       expect.stringContaining("/reserva/resumen"),
+    );
+  });
+
+  it("apunta directo a pago cuando el siguiente paso es pago (variante b)", () => {
+    currentParams = new URLSearchParams({
+      espacioId: "1",
+      fecha: "2026-09-05",
+      horaInicio: "10:00",
+      horaFin: "12:00",
+    });
+    render(<ReservaFechaForm espacio={espacio} siguientePaso="pago" />);
+    expect(screen.getByRole("link", { name: "Continuar" })).toHaveAttribute(
+      "href",
+      expect.stringContaining("/reserva/pago"),
     );
   });
 });
