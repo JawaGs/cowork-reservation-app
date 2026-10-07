@@ -31,6 +31,8 @@ export function CatalogoEspacios({ espacios, market, layout }: CatalogoEspaciosP
     [espacios, filtros],
   );
 
+  const hayFiltrosActivos = Boolean(filtros.busqueda || filtros.ubicacion || filtros.tipo);
+
   return (
     <div>
       <div className="flex flex-wrap gap-fluid-sm mb-fluid-md">
@@ -77,9 +79,20 @@ export function CatalogoEspacios({ espacios, market, layout }: CatalogoEspaciosP
       </div>
 
       {resultado.length === 0 ? (
-        <p className="text-fluid-base text-muted">
-          No hay espacios que coincidan con los filtros.
-        </p>
+        <div>
+          <p className="text-fluid-base text-muted">
+            No hay espacios que coincidan con los filtros.
+          </p>
+          {hayFiltrosActivos && (
+            <button
+              type="button"
+              onClick={() => setFiltros({})}
+              className="mt-fluid-xs text-fluid-sm underline underline-offset-2 hover:text-foreground"
+            >
+              Limpiar filtros
+            </button>
+          )}
+        </div>
       ) : (
         <div
           className={

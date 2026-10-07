@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useTransition, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { validarPago, type DatosPago } from "@/lib/pago";
 import { usePago } from "./PagoProvider";
@@ -9,11 +9,21 @@ interface PagoFormProps {
   hrefConfirmacion: string;
 }
 
-const CAMPOS: { name: keyof DatosPago; label: string; placeholder: string }[] = [
-  { name: "numeroTarjeta", label: "Número de tarjeta", placeholder: "4111 1111 1111 1111" },
-  { name: "nombreTitular", label: "Nombre del titular", placeholder: "Nombre Apellido" },
-  { name: "expiracion", label: "Expiración (MM/YY)", placeholder: "09/26" },
-  { name: "cvv", label: "CVV", placeholder: "123" },
+const CAMPOS: {
+  name: keyof DatosPago;
+  label: string;
+  placeholder: string;
+  type: "text" | "password";
+}[] = [
+  {
+    name: "numeroTarjeta",
+    label: "Número de tarjeta",
+    placeholder: "4111 1111 1111 1111",
+    type: "text",
+  },
+  { name: "nombreTitular", label: "Nombre del titular", placeholder: "Nombre Apellido", type: "text" },
+  { name: "expiracion", label: "Expiración (MM/YY)", placeholder: "09/26", type: "text" },
+  { name: "cvv", label: "CVV", placeholder: "123", type: "password" },
 ];
 
 const DATOS_INICIALES: DatosPago = {
@@ -28,6 +38,7 @@ export function PagoForm({ hrefConfirmacion }: PagoFormProps) {
   const { guardarPago } = usePago();
   const [datos, setDatos] = useState<DatosPago>(DATOS_INICIALES);
   const [intentoEnviar, setIntentoEnviar] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const resultado = validarPago(datos);
 
@@ -40,16 +51,18 @@ export function PagoForm({ hrefConfirmacion }: PagoFormProps) {
     setIntentoEnviar(true);
     if (!resultado.valido) return;
     guardarPago(datos);
-    router.push(hrefConfirmacion);
+    startTransition(() => {
+      router.push(hrefConfirmacion);
+    });
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-fluid-sm">
-      {CAMPOS.map(({ name, label, placeholder }) => (
+      {CAMPOS.map(({ name, label, placeholder, type }) => (
         <label key={name} className="flex flex-col gap-fluid-2xs text-fluid-sm">
           {label}
           <input
-            type="text"
+            type={type}
             value={datos[name]}
             placeholder={placeholder}
             onChange={(e) => handleChange(name, e.target.value)}
@@ -62,8 +75,8 @@ export function PagoForm({ hrefConfirmacion }: PagoFormProps) {
           )}
         </label>
       ))}
-      <button type="submit" className="btn-primary">
-        Pagar
+      <button type="submit" disabled={isPending} className="btn-primary disabled:opacity-60">
+        {isPending ? "Pagando…" : "Pagar"}
       </button>
     </form>
   );

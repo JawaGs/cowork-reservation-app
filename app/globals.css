@@ -59,7 +59,7 @@ body {
 
 @layer components {
   .field {
-    @apply w-full border-b border-border bg-transparent px-1 py-fluid-2xs text-fluid-sm text-foreground outline-none transition-colors focus:border-accent;
+    @apply w-full rounded-sm border-b border-border bg-transparent px-1 py-fluid-2xs text-fluid-sm text-foreground outline-none transition-colors focus:border-accent focus-visible:ring-2 focus-visible:ring-accent;
   }
 
   .card {
@@ -67,7 +67,7 @@ body {
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-md bg-accent px-fluid-sm py-fluid-2xs text-fluid-sm font-medium text-accent-foreground transition-opacity hover:opacity-90;
+    @apply inline-flex items-center justify-center rounded-md bg-accent px-fluid-sm py-fluid-2xs text-fluid-sm font-medium text-accent-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 
   .btn-primary-disabled {

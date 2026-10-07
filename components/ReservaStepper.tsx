@@ -21,13 +21,21 @@ export function ReservaStepper({ variant, pasoActual, params }: ReservaStepperPr
 
   return (
     <ol className="mb-fluid-md flex flex-wrap items-center gap-fluid-2xs text-fluid-sm">
+      <li className="flex items-center gap-fluid-2xs">
+        <Link
+          href="/"
+          className="underline underline-offset-2 text-muted hover:text-foreground"
+        >
+          Inicio
+        </Link>
+      </li>
       {pasos.map((paso, indice) => {
         const esActual = indice === indiceActual;
         const esCompletado = indice < indiceActual;
 
         return (
           <li key={paso} className="flex items-center gap-fluid-2xs">
-            {indice > 0 && <span className="text-border">→</span>}
+            <span className="text-border">→</span>
             {esCompletado ? (
               <Link
                 href={`/reserva/${paso}?${params.toString()}`}

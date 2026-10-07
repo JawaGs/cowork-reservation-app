@@ -36,8 +36,10 @@ describe("ReservaStepper", () => {
     expect(screen.getByRole("link", { name: "Pago" })).toBeInTheDocument();
   });
 
-  it("no ofrece ningún link cuando el paso actual es el primero", () => {
+  it("siempre ofrece un link explícito a Inicio, incluso en el primer paso", () => {
     render(<ReservaStepper variant="base" pasoActual="fecha" params={params} />);
-    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Inicio" })).toHaveAttribute("href", "/");
+    // Fecha es el primer paso del flujo: no hay pasos anteriores a él.
+    expect(screen.queryByRole("link", { name: "Fecha" })).not.toBeInTheDocument();
   });
 });

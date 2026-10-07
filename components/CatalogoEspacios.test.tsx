@@ -45,4 +45,19 @@ describe("CatalogoEspacios", () => {
 
     expect(screen.getByText(/no hay espacios/i)).toBeInTheDocument();
   });
+
+  it("ofrece limpiar filtros cuando no hay resultados, y restaura el catálogo al hacer clic", async () => {
+    const user = userEvent.setup();
+    render(<CatalogoEspacios espacios={espacios} market={market} layout="grid" />);
+
+    await user.type(screen.getByPlaceholderText("Buscar..."), "no-existe");
+    const limpiar = screen.getByRole("button", { name: "Limpiar filtros" });
+    expect(limpiar).toBeInTheDocument();
+
+    await user.click(limpiar);
+
+    expect(screen.getByText("Providencia Hub")).toBeInTheDocument();
+    expect(screen.getByText("Manhattan Desk")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Limpiar filtros" })).not.toBeInTheDocument();
+  });
 });

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DatePicker } from "@/components/DatePicker";
+import { LinkPendingLabel } from "@/components/LinkPendingLabel";
 import { TimeSelect } from "@/components/TimeSelect";
 import { calcularDuracionHoras, esDiaCompleto, validarReserva } from "@/lib/disponibilidad";
 import type { Espacio } from "@/lib/espacios";
@@ -91,9 +92,10 @@ export function ReservaFechaForm({ espacio, siguientePaso }: ReservaFechaFormPro
             horaInicio,
             horaFin,
           }).toString()}`}
+          prefetch={false}
           className="btn-primary text-center"
         >
-          Continuar
+          <LinkPendingLabel>Continuar</LinkPendingLabel>
         </Link>
       ) : (
         <span className="btn-primary-disabled text-center">Continuar</span>

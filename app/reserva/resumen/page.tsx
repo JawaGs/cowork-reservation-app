@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/Container";
+import { LinkPendingLabel } from "@/components/LinkPendingLabel";
 import { ReservaError } from "@/components/ReservaError";
 import { ReservaResumenDetalle } from "@/components/ReservaResumenDetalle";
 import { ReservaStepper } from "@/components/ReservaStepper";
@@ -75,8 +76,12 @@ export default async function ReservaResumenPage({
         precioUSD={precioUSD}
         market={market}
       />
-      <Link href={`/reserva/pago?${params.toString()}`} className="btn-primary mt-fluid-md">
-        Continuar a pago
+      <Link
+        href={`/reserva/pago?${params.toString()}`}
+        prefetch={false}
+        className="btn-primary mt-fluid-md"
+      >
+        <LinkPendingLabel>Continuar a pago</LinkPendingLabel>
       </Link>
     </Container>
   );

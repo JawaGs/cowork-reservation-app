@@ -48,7 +48,7 @@ describe("ReservaFechaForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "Fecha" }));
     // Navega al mes siguiente para no depender de qué día es "hoy" al correr el test.
     fireEvent.click(screen.getByRole("button", { name: "Mes siguiente" }));
-    fireEvent.click(screen.getByRole("button", { name: "15" }));
+    fireEvent.click(screen.getByRole("button", { name: /^15 de/ }));
     expect(replace).toHaveBeenCalledWith(expect.stringContaining("fecha="));
   });
 
