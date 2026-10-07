@@ -7,8 +7,9 @@ Público objetivo: clientes/reclutadores freelance (EU/US) evaluando seniority t
 ## Stack
 
 - Next.js (App Router) + TypeScript
-- Tailwind CSS (estilos mínimos, sin design system)
+- Tailwind CSS v4 (paleta y escalas propias, sin librería de componentes)
 - Vitest + React Testing Library
+- Playwright (devDependency) para verificación visual/E2E real en navegador — ver [Testing](#testing)
 
 ## Flujo de rutas
 
@@ -45,6 +46,19 @@ Asignación vía cookie de sesión (`variant`, sin `maxAge`), persistente durant
 | A (25%) | Lista | 4 pasos independientes (igual que Base, cambia solo el layout) |
 | B (25%) | Grid | 3 pasos (fecha → pago → resumen+confirmación fusionados) |
 
+## Diseño visual
+
+Minimalista y fluido: tipografía y espaciado interpolan continuamente con el viewport vía `clamp()` (tokens `text-fluid-*`/`spacing-fluid-*` en `app/globals.css`), en vez de saltar por breakpoints fijos. El grid del catálogo usa `grid-template-columns: repeat(auto-fit, minmax(...))` por la misma razón — reflow continuo de 1 a 4 columnas según el ancho disponible.
+
+- Paleta monocromática (negro/blanco/zinc) con **light + dark mode automático** vía `prefers-color-scheme`.
+- `components/Container.tsx` centraliza ancho máximo + padding fluido; clases compartidas (`.field`, `.card`, `.btn-primary`) en `@layer components` evitan repetir estilos entre páginas.
+- Accesibilidad: focus ring visible (`focus-visible:ring-2`) en todos los controles, `aria-label` con la fecha completa en cada día del date picker, navegación por teclado completa en el calendario (flechas, Enter/Espacio, Escape).
+
+## Navegación del flujo
+
+- `ReservaStepper` muestra en qué paso se está — 4 pasos en Base/A, 3 en B (sin "Resumen") — y los pasos ya completados son links que preservan la reserva en curso.
+- "Inicio" es siempre el primer ítem del stepper (vuelve al catálogo desde cualquier paso), y el nombre del sitio en el header global cumple la misma función en toda la app, no solo dentro del flujo de reserva.
+
 ## Geo-targeting
 
 Detección de locale del navegador (`Accept-Language`, región prioritaria sobre idioma) → mercado:
@@ -64,9 +78,11 @@ Vitest cubre, en paralelo a cada fase (no al final):
 - **Lógica de negocio:** validación de disponibilidad, cálculo de precio (día completo vs. por hora), asignación de variante A/B, mapeo de locale → mercado.
 - **Componentes:** render e interacción de cada paso del flujo, incluyendo ambas variantes de layout.
 
+Para verificación visual/E2E en un navegador real (no simulado por jsdom) — flujo completo, ambas variantes, dark mode, responsive — hay un skill de Claude Code en [`.claude/skills/run-cowork-reservation-app/`](./.claude/skills/run-cowork-reservation-app/SKILL.md) que levanta la app y la maneja con Playwright.
+
 ## Fuera de alcance (todo el proyecto)
 
-Backend real, pulido visual/design system, bloqueo de disponibilidad cross-user, pasarela de pago real.
+Backend real, librería de componentes/design system, bloqueo de disponibilidad cross-user, pasarela de pago real.
 
 ## Desarrollo
 
