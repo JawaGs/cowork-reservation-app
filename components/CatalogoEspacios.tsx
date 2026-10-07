@@ -18,9 +18,6 @@ interface CatalogoEspaciosProps {
   layout: Layout;
 }
 
-const campoClase =
-  "border-b border-border bg-transparent px-1 py-fluid-2xs text-fluid-sm text-foreground outline-none focus:border-accent";
-
 export function CatalogoEspacios({ espacios, market, layout }: CatalogoEspaciosProps) {
   const [filtros, setFiltros] = useState<EspacioFiltros>({});
 
@@ -44,14 +41,14 @@ export function CatalogoEspacios({ espacios, market, layout }: CatalogoEspaciosP
           onChange={(e) =>
             setFiltros((f) => ({ ...f, busqueda: e.target.value || undefined }))
           }
-          className={campoClase}
+          className="field"
         />
         <select
           value={filtros.ubicacion ?? ""}
           onChange={(e) =>
             setFiltros((f) => ({ ...f, ubicacion: e.target.value || undefined }))
           }
-          className={campoClase}
+          className="field"
         >
           <option value="">Todas las ubicaciones</option>
           {ubicaciones.map((ubicacion) => (
@@ -68,7 +65,7 @@ export function CatalogoEspacios({ espacios, market, layout }: CatalogoEspaciosP
               tipo: (e.target.value || undefined) as TipoEspacio | undefined,
             }))
           }
-          className={campoClase}
+          className="field"
         >
           <option value="">Todos los tipos</option>
           {(Object.keys(TIPO_LABELS) as TipoEspacio[]).map((tipo) => (

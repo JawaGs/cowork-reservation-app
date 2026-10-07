@@ -77,33 +77,39 @@ export function DatePicker({ value, onChange, minDate }: DatePickerProps) {
 
   return (
     <div className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="border px-2 py-1 w-full text-left"
-      >
+      <button type="button" onClick={() => setOpen((o) => !o)} className="field text-left">
         {value ? formatDisplay(value) : "Selecciona una fecha"}
       </button>
 
       {open && (
-        <div className="absolute z-10 mt-1 border bg-white p-2 w-64">
-          <div className="flex items-center justify-between mb-2">
-            <button type="button" onClick={() => cambiarMes(-1)} aria-label="Mes anterior">
+        <div className="card absolute z-10 mt-fluid-2xs w-64 bg-background shadow-sm">
+          <div className="flex items-center justify-between mb-fluid-xs text-fluid-sm">
+            <button
+              type="button"
+              onClick={() => cambiarMes(-1)}
+              aria-label="Mes anterior"
+              className="px-1 text-muted hover:text-foreground"
+            >
               ‹
             </button>
-            <span>
+            <span className="font-medium">
               {MESES[mesVisible.month]} {mesVisible.year}
             </span>
-            <button type="button" onClick={() => cambiarMes(1)} aria-label="Mes siguiente">
+            <button
+              type="button"
+              onClick={() => cambiarMes(1)}
+              aria-label="Mes siguiente"
+              className="px-1 text-muted hover:text-foreground"
+            >
               ›
             </button>
           </div>
-          <div className="grid grid-cols-7 gap-1 text-center text-xs text-zinc-500 mb-1">
+          <div className="grid grid-cols-7 gap-1 text-center text-fluid-xs text-muted mb-fluid-2xs">
             {DIAS_SEMANA.map((dia) => (
               <span key={dia}>{dia}</span>
             ))}
           </div>
-          <div className="grid grid-cols-7 gap-1 text-center">
+          <div className="grid grid-cols-7 gap-1 text-center text-fluid-sm">
             {Array.from({ length: primerDiaSemana }).map((_, i) => (
               <span key={`vacio-${i}`} />
             ))}
@@ -121,10 +127,10 @@ export function DatePicker({ value, onChange, minDate }: DatePickerProps) {
                   onClick={() => seleccionarDia(day)}
                   className={
                     esSeleccionado
-                      ? "bg-black text-white rounded py-1"
+                      ? "rounded bg-accent py-1 text-accent-foreground"
                       : deshabilitado
-                        ? "text-zinc-300 py-1"
-                        : "hover:bg-zinc-100 rounded py-1"
+                        ? "py-1 text-border"
+                        : "rounded py-1 hover:bg-border/40"
                   }
                 >
                   {day}

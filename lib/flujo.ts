@@ -11,3 +11,11 @@ export function pasoTrasFecha(variant: Variant): PasoTrasFecha {
 export function flujoCondensado(variant: Variant): boolean {
   return variant === "b";
 }
+
+export type PasoFlujo = "fecha" | "resumen" | "pago" | "confirmacion";
+
+export function pasosDelFlujo(variant: Variant): PasoFlujo[] {
+  return variant === "b"
+    ? ["fecha", "pago", "confirmacion"]
+    : ["fecha", "resumen", "pago", "confirmacion"];
+}

@@ -25,13 +25,9 @@ export function TimeSelect({ label, value, onChange, min }: TimeSelectProps) {
   const opciones = min ? TODAS_LAS_HORAS.filter((hora) => hora > min) : TODAS_LAS_HORAS;
 
   return (
-    <label className="flex flex-col gap-1">
+    <label className="flex flex-col gap-fluid-2xs text-fluid-sm">
       {label}
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="border px-2 py-1"
-      >
+      <select value={value} onChange={(e) => onChange(e.target.value)} className="field">
         <option value="" disabled>
           Selecciona una hora
         </option>

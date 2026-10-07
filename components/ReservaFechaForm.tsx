@@ -51,8 +51,8 @@ export function ReservaFechaForm({ espacio, siguientePaso }: ReservaFechaFormPro
   const duracion = completo ? calcularDuracionHoras(horaInicio, horaFin) : null;
 
   return (
-    <div className="flex flex-col gap-4 max-w-sm">
-      <label className="flex flex-col gap-1">
+    <div className="flex flex-col gap-fluid-sm">
+      <label className="flex flex-col gap-fluid-2xs text-fluid-sm">
         Fecha
         <DatePicker
           value={fecha}
@@ -73,10 +73,12 @@ export function ReservaFechaForm({ espacio, siguientePaso }: ReservaFechaFormPro
       />
 
       {resultado && !resultado.valido && resultado.motivo && (
-        <p className="text-red-600 text-sm">{MOTIVO_LABELS[resultado.motivo]}</p>
+        <p className="text-fluid-sm text-red-600 dark:text-red-400">
+          {MOTIVO_LABELS[resultado.motivo]}
+        </p>
       )}
       {resultado?.valido && duracion !== null && (
-        <p className="text-sm text-zinc-600">
+        <p className="text-fluid-sm text-muted">
           Duración: {duracion}h{esDiaCompleto(duracion) ? " (tarifa día completo)" : ""}
         </p>
       )}
@@ -89,14 +91,12 @@ export function ReservaFechaForm({ espacio, siguientePaso }: ReservaFechaFormPro
             horaInicio,
             horaFin,
           }).toString()}`}
-          className="inline-block text-center border rounded px-4 py-2 bg-black text-white"
+          className="btn-primary text-center"
         >
           Continuar
         </Link>
       ) : (
-        <span className="inline-block text-center border rounded px-4 py-2 bg-zinc-200 text-zinc-500">
-          Continuar
-        </span>
+        <span className="btn-primary-disabled text-center">Continuar</span>
       )}
     </div>
   );

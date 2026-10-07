@@ -12,7 +12,7 @@ export function EspacioCard({ espacio, market }: EspacioCardProps) {
   return (
     <Link
       href={`/espacios/${espacio.id}`}
-      className="group block rounded-lg border border-border bg-surface p-fluid-sm transition-colors hover:border-accent"
+      className="card block transition-colors hover:border-accent"
     >
       <h2 className="text-fluid-lg font-semibold tracking-tight">{espacio.nombre}</h2>
       <p className="mt-1 text-fluid-sm text-muted">

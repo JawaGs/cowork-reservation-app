@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
+import { Container } from "@/components/Container";
 import { ESPACIOS_MOCK, TIPO_LABELS } from "@/lib/espacios";
 import { resolveMarket } from "@/lib/market";
 import { formatPrice } from "@/lib/pricing";
@@ -21,20 +22,21 @@ export default async function EspacioDetallePage({
   const market = resolveMarket(headersList.get("accept-language"));
 
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-semibold">{espacio.nombre}</h1>
-      <p className="text-zinc-600 mt-1">
+    <Container>
+      <h1 className="text-fluid-2xl font-semibold tracking-tight">{espacio.nombre}</h1>
+      <p className="mt-fluid-2xs text-fluid-base text-muted">
         {espacio.ubicacion} · {TIPO_LABELS[espacio.tipo]}
       </p>
-      <p className="mt-4 font-medium">
-        {formatPrice(espacio.precioHoraUSD, market)} / hora
+      <p className="mt-fluid-sm text-fluid-xl font-medium">
+        {formatPrice(espacio.precioHoraUSD, market)}{" "}
+        <span className="text-fluid-base font-normal text-muted">/ hora</span>
       </p>
       <Link
         href={`/reserva/fecha?espacioId=${espacio.id}`}
-        className="inline-block mt-6 border rounded px-4 py-2 bg-black text-white"
+        className="btn-primary mt-fluid-md"
       >
         Reservar
       </Link>
-    </main>
+    </Container>
   );
 }

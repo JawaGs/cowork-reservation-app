@@ -19,11 +19,11 @@ export function ConfirmacionPago({ hrefPago }: ConfirmacionPagoProps) {
   }, [datosPago, hrefPago, router]);
 
   if (!datosPago) {
-    return <p className="text-zinc-600">Redirigiendo a pago…</p>;
+    return <p className="text-fluid-base text-muted">Redirigiendo a pago…</p>;
   }
 
   return (
-    <p className="text-zinc-600">
+    <p className="text-fluid-base text-muted">
       Pago confirmado con tarjeta terminada en {datosPago.numeroTarjeta.slice(-4)}.
     </p>
   );

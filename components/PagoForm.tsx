@@ -44,23 +44,25 @@ export function PagoForm({ hrefConfirmacion }: PagoFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-sm">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-fluid-sm">
       {CAMPOS.map(({ name, label, placeholder }) => (
-        <label key={name} className="flex flex-col gap-1">
+        <label key={name} className="flex flex-col gap-fluid-2xs text-fluid-sm">
           {label}
           <input
             type="text"
             value={datos[name]}
             placeholder={placeholder}
             onChange={(e) => handleChange(name, e.target.value)}
-            className="border px-2 py-1"
+            className="field"
           />
           {intentoEnviar && resultado.errores[name] && (
-            <span className="text-red-600 text-sm">{resultado.errores[name]}</span>
+            <span className="text-fluid-xs text-red-600 dark:text-red-400">
+              {resultado.errores[name]}
+            </span>
           )}
         </label>
       ))}
-      <button type="submit" className="border rounded px-4 py-2 bg-black text-white">
+      <button type="submit" className="btn-primary">
         Pagar
       </button>
     </form>
