@@ -18,6 +18,9 @@ interface CatalogoEspaciosProps {
   layout: Layout;
 }
 
+const campoClase =
+  "border-b border-border bg-transparent px-1 py-fluid-2xs text-fluid-sm text-foreground outline-none focus:border-accent";
+
 export function CatalogoEspacios({ espacios, market, layout }: CatalogoEspaciosProps) {
   const [filtros, setFiltros] = useState<EspacioFiltros>({});
 
@@ -33,7 +36,7 @@ export function CatalogoEspacios({ espacios, market, layout }: CatalogoEspaciosP
 
   return (
     <div>
-      <div className="flex flex-wrap gap-3 mb-6">
+      <div className="flex flex-wrap gap-fluid-sm mb-fluid-md">
         <input
           type="text"
           placeholder="Buscar..."
@@ -41,14 +44,14 @@ export function CatalogoEspacios({ espacios, market, layout }: CatalogoEspaciosP
           onChange={(e) =>
             setFiltros((f) => ({ ...f, busqueda: e.target.value || undefined }))
           }
-          className="border px-2 py-1"
+          className={campoClase}
         />
         <select
           value={filtros.ubicacion ?? ""}
           onChange={(e) =>
             setFiltros((f) => ({ ...f, ubicacion: e.target.value || undefined }))
           }
-          className="border px-2 py-1"
+          className={campoClase}
         >
           <option value="">Todas las ubicaciones</option>
           {ubicaciones.map((ubicacion) => (
@@ -65,7 +68,7 @@ export function CatalogoEspacios({ espacios, market, layout }: CatalogoEspaciosP
               tipo: (e.target.value || undefined) as TipoEspacio | undefined,
             }))
           }
-          className="border px-2 py-1"
+          className={campoClase}
         >
           <option value="">Todos los tipos</option>
           {(Object.keys(TIPO_LABELS) as TipoEspacio[]).map((tipo) => (
@@ -77,13 +80,15 @@ export function CatalogoEspacios({ espacios, market, layout }: CatalogoEspaciosP
       </div>
 
       {resultado.length === 0 ? (
-        <p>No hay espacios que coincidan con los filtros.</p>
+        <p className="text-fluid-base text-muted">
+          No hay espacios que coincidan con los filtros.
+        </p>
       ) : (
         <div
           className={
             layout === "grid"
-              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-              : "flex flex-col gap-4"
+              ? "grid grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-fluid-sm"
+              : "flex flex-col gap-fluid-sm"
           }
         >
           {resultado.map((espacio) => (

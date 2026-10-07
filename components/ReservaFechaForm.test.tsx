@@ -11,6 +11,22 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => currentParams,
 }));
 
+// Fechas relativas a "hoy" en vez de literales fijos: un literal como
+// "2026-09-05" era futuro cuando se escribió el test, pero deja de serlo
+// apenas el reloj real lo alcanza, y la regla de "no fechas pasadas"
+// empieza a rechazarlo (correctamente) rompiendo el test.
+function fechaFutura(diasDesdeHoy: number): string {
+  const fecha = new Date();
+  fecha.setDate(fecha.getDate() + diasDesdeHoy);
+  const anio = fecha.getFullYear();
+  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+  const dia = String(fecha.getDate()).padStart(2, "0");
+  return `${anio}-${mes}-${dia}`;
+}
+
+const FECHA_OCUPADA = fechaFutura(5);
+const FECHA_VALIDA = fechaFutura(10);
+
 const espacio: Espacio = {
   id: "1",
   nombre: "Providencia Hub",
@@ -18,7 +34,7 @@ const espacio: Espacio = {
   precioHoraUSD: 10,
   precioDiaUSD: 50,
   tipo: "escritorio-flexible",
-  horariosOcupados: [{ fecha: "2026-09-01", horaInicio: "09:00", horaFin: "12:00" }],
+  horariosOcupados: [{ fecha: FECHA_OCUPADA, horaInicio: "09:00", horaFin: "12:00" }],
 };
 
 beforeEach(() => {
@@ -45,7 +61,7 @@ describe("ReservaFechaForm", () => {
   it("muestra el motivo de horario ocupado y no ofrece continuar", () => {
     currentParams = new URLSearchParams({
       espacioId: "1",
-      fecha: "2026-09-01",
+      fecha: FECHA_OCUPADA,
       horaInicio: "10:00",
       horaFin: "11:00",
     });
@@ -57,7 +73,7 @@ describe("ReservaFechaForm", () => {
   it("habilita continuar y muestra la duración cuando la reserva es válida", () => {
     currentParams = new URLSearchParams({
       espacioId: "1",
-      fecha: "2026-09-05",
+      fecha: FECHA_VALIDA,
       horaInicio: "10:00",
       horaFin: "12:00",
     });
@@ -72,7 +88,7 @@ describe("ReservaFechaForm", () => {
   it("limpia hora fin si deja de ser válida al cambiar hora inicio", () => {
     currentParams = new URLSearchParams({
       espacioId: "1",
-      fecha: "2026-09-05",
+      fecha: FECHA_VALIDA,
       horaInicio: "10:00",
       horaFin: "12:00",
     });
@@ -87,7 +103,7 @@ describe("ReservaFechaForm", () => {
   it("conserva hora fin si sigue siendo válida al cambiar hora inicio", () => {
     currentParams = new URLSearchParams({
       espacioId: "1",
-      fecha: "2026-09-05",
+      fecha: FECHA_VALIDA,
       horaInicio: "10:00",
       horaFin: "16:00",
     });
@@ -101,7 +117,7 @@ describe("ReservaFechaForm", () => {
   it("apunta directo a pago cuando el siguiente paso es pago (variante b)", () => {
     currentParams = new URLSearchParams({
       espacioId: "1",
-      fecha: "2026-09-05",
+      fecha: FECHA_VALIDA,
       horaInicio: "10:00",
       horaFin: "12:00",
     });

@@ -12,14 +12,15 @@ export function EspacioCard({ espacio, market }: EspacioCardProps) {
   return (
     <Link
       href={`/espacios/${espacio.id}`}
-      className="block border rounded p-4 hover:border-black"
+      className="group block rounded-lg border border-border bg-surface p-fluid-sm transition-colors hover:border-accent"
     >
-      <h2 className="font-semibold">{espacio.nombre}</h2>
-      <p className="text-sm text-zinc-600">
+      <h2 className="text-fluid-lg font-semibold tracking-tight">{espacio.nombre}</h2>
+      <p className="mt-1 text-fluid-sm text-muted">
         {espacio.ubicacion} · {TIPO_LABELS[espacio.tipo]}
       </p>
-      <p className="mt-2 font-medium">
-        {formatPrice(espacio.precioHoraUSD, market)} / hora
+      <p className="mt-fluid-2xs text-fluid-base font-medium">
+        {formatPrice(espacio.precioHoraUSD, market)}{" "}
+        <span className="font-normal text-muted">/ hora</span>
       </p>
     </Link>
   );

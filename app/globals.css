@@ -2,25 +2,57 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #18181b;
+  --muted: #71717a;
+  --border: #e4e4e7;
+  --surface: #fafafa;
+  --accent: #18181b;
+  --accent-foreground: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #09090b;
+    --foreground: #fafafa;
+    --muted: #a1a1aa;
+    --border: #27272a;
+    --surface: #18181b;
+    --accent: #fafafa;
+    --accent-foreground: #09090b;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-surface: var(--surface);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Escala tipográfica fluida: interpola entre viewport ~360px y ~1440px
+     en vez de saltar por breakpoints. */
+  --text-fluid-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);
+  --text-fluid-sm: clamp(0.875rem, 0.83rem + 0.2vw, 0.9375rem);
+  --text-fluid-base: clamp(1rem, 0.94rem + 0.3vw, 1.0625rem);
+  --text-fluid-lg: clamp(1.125rem, 1.03rem + 0.45vw, 1.25rem);
+  --text-fluid-xl: clamp(1.375rem, 1.2rem + 0.8vw, 1.625rem);
+  --text-fluid-2xl: clamp(1.75rem, 1.4rem + 1.6vw, 2.25rem);
+  --text-fluid-3xl: clamp(2.25rem, 1.7rem + 2.5vw, 3rem);
+
+  /* Escala de espaciado fluida, misma lógica que la tipografía. */
+  --spacing-fluid-2xs: clamp(0.5rem, 0.45rem + 0.3vw, 0.75rem);
+  --spacing-fluid-xs: clamp(0.75rem, 0.65rem + 0.5vw, 1rem);
+  --spacing-fluid-sm: clamp(1rem, 0.85rem + 0.7vw, 1.5rem);
+  --spacing-fluid-md: clamp(1.5rem, 1.1rem + 1.8vw, 3rem);
+  --spacing-fluid-lg: clamp(2.5rem, 1.7rem + 3.5vw, 5rem);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }
