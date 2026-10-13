@@ -150,6 +150,45 @@ const COMMANDS = {
     }
   },
 
+  // viewport <width> <height> — resize the page, e.g. viewport 390 844
+  async viewport(args) {
+    if (!page) return console.log("ERROR: launch first");
+    const [width, height] = args.split(" ").map(Number);
+    if (!width || !height) return console.log("ERROR: usage: viewport <width> <height>");
+    await page.setViewportSize({ width, height });
+    console.log("viewport ->", width, "x", height);
+  },
+
+  // press <key> — a real keyboard press on whatever has focus, e.g. press Tab,
+  // press ArrowRight, press Enter. Uses Playwright key names.
+  async press(key) {
+    if (!page) return console.log("ERROR: launch first");
+    try {
+      await page.keyboard.press(key);
+      console.log("press", key, "-> OK");
+    } catch (e) {
+      console.log("press", key, "-> ERROR:", e.message.split("\n")[0]);
+    }
+  },
+
+  // focused — the focused element: tag, aria-label or text, and its computed
+  // outline, to check what keyboard focus looks like.
+  async focused() {
+    if (!page) return console.log("ERROR: launch first");
+    const info = await page.evaluate(() => {
+      const el = document.activeElement;
+      if (!el || el === document.body) return null;
+      const css = getComputedStyle(el);
+      return {
+        tag: el.tagName.toLowerCase(),
+        label: el.getAttribute("aria-label") ?? el.textContent?.trim().slice(0, 60),
+        outline: `${css.outlineStyle} ${css.outlineWidth} ${css.outlineColor}`,
+        boxShadow: css.boxShadow,
+      };
+    });
+    console.log(info ? JSON.stringify(info) : "(nothing focused)");
+  },
+
   async text(sel) {
     if (!page) return console.log("ERROR: launch first");
     const content = await page.evaluate(

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run test)",
+      "Bash(npm run lint)",
+      "Bash(npm run typecheck)",
+      "Bash(npx vitest run:*)",
+      "Bash(node scripts/spec-trace.mjs:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git merge-base:*)"
+    ]
+  }
+}

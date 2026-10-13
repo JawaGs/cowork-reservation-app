@@ -61,6 +61,9 @@ If `tmux` is available, you can also run the driver interactively and
 | `value <selector>` | print an input/select's current value |
 | `url` | print the current URL |
 | `eval <js-expr>` | evaluate JS in the page, print JSON |
+| `viewport <width> <height>` | resize the page, e.g. `viewport 390 844` for a narrow phone |
+| `press <key>` | real key press on the focused element: `press Tab`, `press ArrowRight`, `press Enter` |
+| `focused` | print the focused element (tag, `aria-label` or text) and its computed outline and box-shadow |
 | `console` | print collected `console.error`/page errors since `launch` |
 | `quit` | close the browser |
 
