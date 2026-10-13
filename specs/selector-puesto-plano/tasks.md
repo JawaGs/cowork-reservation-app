@@ -25,7 +25,7 @@
 
 ## Tareas
 
-### [ ] T-01 — Lógica pura de disponibilidad de puestos
+### [x] T-01 — Lógica pura de disponibilidad de puestos
 
 - **Objetivo:** existen, probadas y sin depender de React ni Next, las funciones y tipos que todo lo demás va a reutilizar: disponibilidad determinista, disparo del error, navegación entre libres, texto de anuncio.
 - **Criterios que cierra:** ninguno de punta a punta todavía (fundación); fija el contrato para AC-04, AC-07, AC-09, AC-11, AC-12, AC-17, AC-22, AC-24.
