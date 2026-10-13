@@ -55,7 +55,7 @@
   - `route.test.ts`: "espera ~600ms de latencia antes de responder" (con `vi.useFakeTimers()`)
 - **Terminado cuando:** los tests de arriba pasan, y `npm run test`, `npm run lint` y `npx tsc --noEmit` terminan sin errores. El endpoint existe pero nada lo llama todavía — no afecta la app en marcha.
 
-### [ ] T-03 — Hook `usePuestosDisponibilidad`
+### [x] T-03 — Hook `usePuestosDisponibilidad`
 
 - **Objetivo:** el hook dispara, reintenta y descarta peticiones obsoletas, usando `fetch` mockeado en los tests (no depende de que T-02 esté montado en un servidor real).
 - **Criterios que cierra:** AC-03, AC-10, AC-14, AC-20, AC-22.
