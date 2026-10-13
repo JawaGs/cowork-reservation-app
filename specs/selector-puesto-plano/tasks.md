@@ -43,7 +43,7 @@
   - `lib/puestos.test.ts`: `it("AC-12: anunciarPuesto arma el texto exacto para cada estado")`
 - **Terminado cuando:** los tests de arriba pasan, y `npm run test`, `npm run lint` y `npx tsc --noEmit` terminan sin errores. No afecta la app en marcha — nada todavía importa este archivo.
 
-### [ ] T-02 — Route handler de disponibilidad
+### [x] T-02 — Route handler de disponibilidad
 
 - **Objetivo:** `GET /api/espacios/[espacioId]/puestos` responde error o éxito según `lib/puestos.ts`, con la latencia simulada.
 - **Criterios que cierra:** AC-09, AC-22 (a nivel HTTP; la lógica de disparo ya tiene su test unitario en T-01).
