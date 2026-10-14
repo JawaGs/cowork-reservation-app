@@ -39,6 +39,7 @@ export function PlanoPuestos({
   const reintentarBtnRef = useRef<HTMLButtonElement>(null);
   const botonRefs = useRef(new Map<string, HTMLButtonElement>());
   const [cursorId, setCursorId] = useState<string | null>(null);
+  const montajeVerificadoRef = useRef(false);
 
   // Si el usuario reintentó (foco puesto a propósito en el contenedor, ver
   // handleReintentar) y vuelve a fallar, el foco pasa al botón Reintentar.
@@ -48,6 +49,17 @@ export function PlanoPuestos({
       reintentarBtnRef.current?.focus();
     }
   }, [estado]);
+
+  // AC-18: si se montó con un puestoId ya en la URL, se valida una sola vez
+  // contra la primera respuesta exitosa (la inicial, o la de un reintento si
+  // la primera falló) — nunca vuelve a correr después de esa resolución.
+  useEffect(() => {
+    if (montajeVerificadoRef.current || estado !== "exito" || !puestos) return;
+    montajeVerificadoRef.current = true;
+    if (puestoIdSeleccionado && !puestos.find((p) => p.id === puestoIdSeleccionado)?.libre) {
+      onSeleccionar(null);
+    }
+  }, [estado, puestos, puestoIdSeleccionado, onSeleccionar]);
 
   if (!rango) return null;
 

@@ -217,4 +217,30 @@ describe("PlanoPuestos", () => {
 
     screen.getAllByRole("button").forEach((boton) => expect(boton).toHaveAttribute("tabindex", "-1"));
   });
+
+  it("AC-18: preselecciona el puesto si puestoIdSeleccionado corresponde a uno libre", async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ puestos: PUESTOS_ALTERNADOS }));
+    const onSeleccionar = vi.fn();
+    renderPlano({ onSeleccionar, puestoIdSeleccionado: "1" });
+    await waitFor(() => expect(screen.getAllByRole("button")[0]).not.toBeDisabled());
+
+    expect(screen.getByRole("button", { name: /puesto 1, seleccionado/i })).toHaveTextContent("✓");
+    expect(onSeleccionar).not.toHaveBeenCalled();
+  });
+
+  it("AC-18: llama a onSeleccionar(null) si puestoIdSeleccionado no corresponde a ningún puesto libre", async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ puestos: PUESTOS_ALTERNADOS }));
+    const onSeleccionar = vi.fn();
+    renderPlano({ onSeleccionar, puestoIdSeleccionado: "2" }); // "2" está ocupado
+    await waitFor(() => expect(onSeleccionar).toHaveBeenCalledWith(null));
+  });
+
+  it("AC-18: no llama a onSeleccionar si la petición de montaje falla", async () => {
+    fetchMock.mockRejectedValue(new Error("network"));
+    const onSeleccionar = vi.fn();
+    renderPlano({ onSeleccionar, puestoIdSeleccionado: "1" });
+    await screen.findByRole("button", { name: "Reintentar" });
+
+    expect(onSeleccionar).not.toHaveBeenCalled();
+  });
 });

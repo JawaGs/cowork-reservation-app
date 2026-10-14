@@ -116,7 +116,7 @@
   - `PlanoPuestos.test.tsx`: `it("AC-24: ningún puesto tiene tabIndex 0 cuando no hay ninguno libre")`
 - **Terminado cuando:** los tests de arriba (y los anteriores de `PlanoPuestos.test.tsx`) pasan, y `npm run test`, `npm run lint` y `npx tsc --noEmit` terminan sin errores. El foco *visible* (el contorno de 2px) no se verifica acá — es AC-17, criterio `navegador`, en T-11.
 
-### [ ] T-08 — Plano: comportamiento al montar con `puestoId` existente
+### [x] T-08 — Plano: comportamiento al montar con `puestoId` existente
 
 - **Objetivo:** si la página se monta con un `puestoId` en la URL, el plano lo respeta, lo limpia o lo deja intacto según corresponda al resolver la disponibilidad.
 - **Criterios que cierra:** AC-18.
