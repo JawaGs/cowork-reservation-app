@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useRef, type ReactElement } from "react";
+import { useEffect, useRef, useState, type ReactElement } from "react";
 import { usePuestosDisponibilidad } from "@/components/usePuestosDisponibilidad";
 import type { RangoReserva } from "@/lib/disponibilidad";
 import {
   anunciarPuesto,
   CANTIDAD_PUESTOS,
   MENSAJE_ERROR_DISPONIBILIDAD,
+  primerPuestoLibre,
+  siguientePuestoLibre,
+  type Direccion,
   type EstadoAnuncioPuesto,
 } from "@/lib/puestos";
 
@@ -34,6 +37,8 @@ export function PlanoPuestos({
   const { estado, puestos, reintentar } = usePuestosDisponibilidad(espacioId, rango);
   const contenedorRef = useRef<HTMLDivElement>(null);
   const reintentarBtnRef = useRef<HTMLButtonElement>(null);
+  const botonRefs = useRef(new Map<string, HTMLButtonElement>());
+  const [cursorId, setCursorId] = useState<string | null>(null);
 
   // Si el usuario reintentó (foco puesto a propósito en el contenedor, ver
   // handleReintentar) y vuelve a fallar, el foco pasa al botón Reintentar.
@@ -58,6 +63,35 @@ export function PlanoPuestos({
 
   const cargando = estado === "cargando" || estado === "inactivo";
   const sinLibres = estado === "exito" && puestos !== null && puestos.every((p) => !p.libre);
+  const cursorEfectivo =
+    cursorId && puestos?.find((p) => p.id === cursorId)?.libre
+      ? cursorId
+      : puestos
+        ? primerPuestoLibre(puestos)
+        : null;
+
+  function handleKeyDown(e: React.KeyboardEvent<SVGSVGElement>) {
+    if (!puestos) return;
+
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      if (!cursorEfectivo) return;
+      const direccion: Direccion = e.key === "ArrowRight" ? 1 : -1;
+      const siguiente = siguientePuestoLibre(puestos, cursorEfectivo, direccion);
+      if (!siguiente) return;
+      e.preventDefault();
+      setCursorId(siguiente);
+      botonRefs.current.get(siguiente)?.focus();
+      return;
+    }
+
+    if (e.key === "Enter" || e.key === " ") {
+      const id = (e.target as HTMLElement).dataset.puestoId;
+      if (!id) return;
+      const libre = puestos.find((p) => p.id === id)?.libre ?? false;
+      e.preventDefault();
+      handleSeleccionar(id, libre);
+    }
+  }
 
   return (
     <div className="card" ref={contenedorRef} tabIndex={-1}>
@@ -82,6 +116,7 @@ export function PlanoPuestos({
             className="mx-auto w-full max-w-md"
             role="img"
             aria-label="Plano de puestos"
+            onKeyDown={handleKeyDown}
           >
             {Array.from({ length: CANTIDAD_PUESTOS }, (_, indice) => {
               const id = String(indice + 1);
@@ -101,7 +136,13 @@ export function PlanoPuestos({
                 <foreignObject key={id} x={x} y={y} width={CELDA} height={CELDA}>
                   <button
                     type="button"
+                    ref={(el) => {
+                      if (el) botonRefs.current.set(id, el);
+                      else botonRefs.current.delete(id);
+                    }}
+                    data-puesto-id={id}
                     disabled={cargando}
+                    tabIndex={!cargando && id === cursorEfectivo ? 0 : -1}
                     onClick={() => handleSeleccionar(id, libre)}
                     aria-label={anunciarPuesto(id, estadoAnuncio)}
                     className="flex h-full w-full items-center justify-center text-fluid-sm"

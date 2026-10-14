@@ -104,7 +104,7 @@
   - `PlanoPuestos.test.tsx`: `it("AC-19: hacer clic en el puesto ya seleccionado no llama a onSeleccionar")`
 - **Terminado cuando:** los tests de arriba (y los de T-04/T-05) pasan, y `npm run test`, `npm run lint` y `npx tsc --noEmit` terminan sin errores.
 
-### [ ] T-07 — Plano: teclado, anuncios y plano inalcanzable sin libres
+### [x] T-07 — Plano: teclado, anuncios y plano inalcanzable sin libres
 
 - **Objetivo:** las flechas e Izquierda/Derecha mueven el foco solo entre libres, cada puesto anuncia su estado real, y el plano completo queda fuera de la tabulación cuando no hay ninguno libre.
 - **Criterios que cierra:** AC-11, AC-12, AC-24.

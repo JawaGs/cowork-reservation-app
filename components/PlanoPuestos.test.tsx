@@ -171,4 +171,50 @@ describe("PlanoPuestos", () => {
     fireEvent.click(screen.getByRole("button", { name: /puesto 1, seleccionado/i }));
     expect(onSeleccionar).not.toHaveBeenCalled();
   });
+
+  it("AC-11: las flechas mueven el foco entre los puestos libres en orden de id", async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ puestos: PUESTOS_ALTERNADOS }));
+    renderPlano();
+    await waitFor(() => expect(screen.getAllByRole("button")[0]).not.toBeDisabled());
+
+    screen.getByRole("button", { name: /puesto 1, libre/i }).focus();
+    fireEvent.keyDown(document.activeElement!, { key: "ArrowRight" });
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: /puesto 3, libre/i }));
+
+    fireEvent.keyDown(document.activeElement!, { key: "ArrowRight" });
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: /puesto 5, libre/i }));
+
+    fireEvent.keyDown(document.activeElement!, { key: "ArrowLeft" });
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: /puesto 3, libre/i }));
+  });
+
+  it("AC-11: Enter sobre un puesto libre con foco lo selecciona", async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ puestos: PUESTOS_ALTERNADOS }));
+    const onSeleccionar = vi.fn();
+    renderPlano({ onSeleccionar });
+    await waitFor(() => expect(screen.getAllByRole("button")[0]).not.toBeDisabled());
+
+    screen.getByRole("button", { name: /puesto 1, libre/i }).focus();
+    fireEvent.keyDown(document.activeElement!, { key: "Enter" });
+    expect(onSeleccionar).toHaveBeenCalledWith("1");
+  });
+
+  it("AC-12: el aria-label de cada puesto refleja su estado", async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ puestos: PUESTOS_ALTERNADOS }));
+    renderPlano({ puestoIdSeleccionado: "1" });
+    await waitFor(() => expect(screen.getAllByRole("button")[0]).not.toBeDisabled());
+
+    expect(screen.getByRole("button", { name: "Puesto 1, seleccionado" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Puesto 3, libre" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Puesto 2, ocupado" })).toBeInTheDocument();
+  });
+
+  it("AC-24: ningún puesto tiene tabIndex 0 cuando no hay ninguno libre", async () => {
+    const puestos = Array.from({ length: 8 }, (_, i) => ({ id: String(i + 1), libre: false }));
+    fetchMock.mockResolvedValue(jsonResponse({ puestos }));
+    renderPlano();
+    await waitFor(() => expect(screen.getAllByRole("button")[0]).not.toBeDisabled());
+
+    screen.getAllByRole("button").forEach((boton) => expect(boton).toHaveAttribute("tabindex", "-1"));
+  });
 });
