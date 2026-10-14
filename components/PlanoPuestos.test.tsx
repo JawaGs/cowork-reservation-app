@@ -10,11 +10,36 @@ function jsonResponse(body: unknown, ok = true): Response {
   return { ok, json: async () => body } as Response;
 }
 
-function renderPlano(rango: RangoReserva | null = RANGO) {
-  return render(
-    <PlanoPuestos espacioId="1" rango={rango} puestoIdSeleccionado={null} onSeleccionar={() => {}} />,
-  );
+interface MontarOverrides {
+  rango?: RangoReserva | null;
+  puestoIdSeleccionado?: string | null;
+  onSeleccionar?: (id: string | null) => void;
 }
+
+function construirProps(overrides: MontarOverrides) {
+  return {
+    espacioId: "1",
+    rango: overrides.rango === undefined ? RANGO : overrides.rango,
+    puestoIdSeleccionado: overrides.puestoIdSeleccionado ?? null,
+    onSeleccionar: overrides.onSeleccionar ?? (() => {}),
+  };
+}
+
+function renderPlano(overrides: MontarOverrides = {}) {
+  const props = construirProps(overrides);
+  const utils = render(<PlanoPuestos {...props} />);
+  return {
+    ...utils,
+    rerenderCon(nuevos: MontarOverrides) {
+      utils.rerender(<PlanoPuestos {...construirProps({ ...overrides, ...nuevos })} />);
+    },
+  };
+}
+
+const PUESTOS_ALTERNADOS = Array.from({ length: 8 }, (_, i) => ({
+  id: String(i + 1),
+  libre: i % 2 === 0,
+}));
 
 describe("PlanoPuestos", () => {
   let fetchMock: ReturnType<typeof vi.fn>;
@@ -98,5 +123,52 @@ describe("PlanoPuestos", () => {
 
     const mensaje = await screen.findByText("No hay puestos disponibles para este horario");
     expect(mensaje).toHaveAttribute("role", "status");
+  });
+
+  it("AC-05: seleccionar un puesto libre lo marca y llama a onSeleccionar con su id", async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ puestos: PUESTOS_ALTERNADOS }));
+    const onSeleccionar = vi.fn();
+    const { rerenderCon } = renderPlano({ onSeleccionar });
+    await waitFor(() => expect(screen.getAllByRole("button")[0]).not.toBeDisabled());
+
+    fireEvent.click(screen.getByRole("button", { name: /puesto 1, libre/i }));
+    expect(onSeleccionar).toHaveBeenCalledWith("1");
+
+    rerenderCon({ onSeleccionar, puestoIdSeleccionado: "1" });
+    expect(screen.getByRole("button", { name: /puesto 1, seleccionado/i })).toHaveTextContent("✓");
+  });
+
+  it("AC-06: elegir otro puesto libre reemplaza la selección anterior", async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ puestos: PUESTOS_ALTERNADOS }));
+    const onSeleccionar = vi.fn();
+    const { rerenderCon } = renderPlano({ onSeleccionar, puestoIdSeleccionado: "1" });
+    await waitFor(() => expect(screen.getAllByRole("button")[0]).not.toBeDisabled());
+
+    fireEvent.click(screen.getByRole("button", { name: /puesto 3, libre/i }));
+    expect(onSeleccionar).toHaveBeenCalledWith("3");
+
+    rerenderCon({ onSeleccionar, puestoIdSeleccionado: "3" });
+    expect(screen.getByRole("button", { name: /puesto 1, libre/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /puesto 3, seleccionado/i })).toHaveTextContent("✓");
+  });
+
+  it("AC-07: hacer clic en un puesto ocupado no hace nada", async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ puestos: PUESTOS_ALTERNADOS }));
+    const onSeleccionar = vi.fn();
+    renderPlano({ onSeleccionar });
+    await waitFor(() => expect(screen.getAllByRole("button")[0]).not.toBeDisabled());
+
+    fireEvent.click(screen.getByRole("button", { name: /puesto 2, ocupado/i }));
+    expect(onSeleccionar).not.toHaveBeenCalled();
+  });
+
+  it("AC-19: hacer clic en el puesto ya seleccionado no llama a onSeleccionar", async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ puestos: PUESTOS_ALTERNADOS }));
+    const onSeleccionar = vi.fn();
+    renderPlano({ onSeleccionar, puestoIdSeleccionado: "1" });
+    await waitFor(() => expect(screen.getAllByRole("button")[0]).not.toBeDisabled());
+
+    fireEvent.click(screen.getByRole("button", { name: /puesto 1, seleccionado/i }));
+    expect(onSeleccionar).not.toHaveBeenCalled();
   });
 });

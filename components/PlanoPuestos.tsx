@@ -29,6 +29,7 @@ export function PlanoPuestos({
   espacioId,
   rango,
   puestoIdSeleccionado,
+  onSeleccionar,
 }: PlanoPuestosProps): ReactElement | null {
   const { estado, puestos, reintentar } = usePuestosDisponibilidad(espacioId, rango);
   const contenedorRef = useRef<HTMLDivElement>(null);
@@ -48,6 +49,11 @@ export function PlanoPuestos({
   function handleReintentar() {
     contenedorRef.current?.focus();
     reintentar();
+  }
+
+  function handleSeleccionar(id: string, libre: boolean) {
+    if (!libre || id === puestoIdSeleccionado) return;
+    onSeleccionar(id);
   }
 
   const cargando = estado === "cargando" || estado === "inactivo";
@@ -96,6 +102,7 @@ export function PlanoPuestos({
                   <button
                     type="button"
                     disabled={cargando}
+                    onClick={() => handleSeleccionar(id, libre)}
                     aria-label={anunciarPuesto(id, estadoAnuncio)}
                     className="flex h-full w-full items-center justify-center text-fluid-sm"
                   >

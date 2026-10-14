@@ -92,7 +92,7 @@
   - `PlanoPuestos.test.tsx`: `it("AC-25: el contenedor del mensaje de 'sin puestos' tiene role=\"status\"")`
 - **Terminado cuando:** los tests de arriba (y los de T-04) pasan, y `npm run test`, `npm run lint` y `npx tsc --noEmit` terminan sin errores.
 
-### [ ] T-06 — Plano: selección por clic
+### [x] T-06 — Plano: selección por clic
 
 - **Objetivo:** hacer clic en un puesto libre lo selecciona y avisa al padre; en uno ocupado o en el ya seleccionado, no hace nada.
 - **Criterios que cierra:** AC-05, AC-06, AC-07, AC-19.
