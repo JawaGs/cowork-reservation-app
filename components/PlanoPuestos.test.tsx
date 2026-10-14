@@ -1,6 +1,7 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { RangoReserva } from "@/lib/disponibilidad";
+import { MENSAJE_ERROR_DISPONIBILIDAD } from "@/lib/puestos";
 import { PlanoPuestos } from "./PlanoPuestos";
 
 const RANGO: RangoReserva = { fecha: "2026-09-05", horaInicio: "10:00", horaFin: "12:00" };
@@ -56,5 +57,46 @@ describe("PlanoPuestos", () => {
     expect(
       await screen.findByText("No hay puestos disponibles para este horario"),
     ).toBeInTheDocument();
+  });
+
+  it("AC-10: muestra el mensaje de error y el botón Reintentar cuando falla la petición", async () => {
+    fetchMock.mockRejectedValue(new Error("network"));
+    renderPlano();
+
+    expect(await screen.findByText(MENSAJE_ERROR_DISPONIBILIDAD)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Reintentar" })).toBeInTheDocument();
+    expect(screen.queryByRole("img", { name: "Plano de puestos" })).not.toBeInTheDocument();
+  });
+
+  it("AC-10: reintentar vuelve a mostrar el estado de carga y luego el resultado", async () => {
+    fetchMock.mockRejectedValueOnce(new Error("network"));
+    renderPlano();
+    await screen.findByRole("button", { name: "Reintentar" });
+
+    const puestos = Array.from({ length: 8 }, (_, i) => ({ id: String(i + 1), libre: true }));
+    fetchMock.mockResolvedValueOnce(jsonResponse({ puestos }));
+    fireEvent.click(screen.getByRole("button", { name: "Reintentar" }));
+
+    expect(screen.getAllByRole("button")).toHaveLength(8);
+    screen.getAllByRole("button").forEach((boton) => expect(boton).toBeDisabled());
+
+    await waitFor(() => expect(screen.getAllByRole("button")[0]).not.toBeDisabled());
+  });
+
+  it('AC-25: el contenedor del mensaje de error tiene role="status"', async () => {
+    fetchMock.mockRejectedValue(new Error("network"));
+    renderPlano();
+
+    const mensaje = await screen.findByText(MENSAJE_ERROR_DISPONIBILIDAD);
+    expect(mensaje).toHaveAttribute("role", "status");
+  });
+
+  it('AC-25: el contenedor del mensaje de \'sin puestos\' tiene role="status"', async () => {
+    const puestos = Array.from({ length: 8 }, (_, i) => ({ id: String(i + 1), libre: false }));
+    fetchMock.mockResolvedValue(jsonResponse({ puestos }));
+    renderPlano();
+
+    const mensaje = await screen.findByText("No hay puestos disponibles para este horario");
+    expect(mensaje).toHaveAttribute("role", "status");
   });
 });

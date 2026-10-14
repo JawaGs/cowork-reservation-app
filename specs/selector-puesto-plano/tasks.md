@@ -80,7 +80,7 @@
   - `PlanoPuestos.test.tsx`: `it("AC-08: muestra el mensaje 'No hay puestos disponibles para este horario' cuando los 8 están ocupados")`
 - **Terminado cuando:** los tests de arriba pasan, y `npm run test`, `npm run lint` y `npx tsc --noEmit` terminan sin errores. El componente existe pero no se importa en ningún lado todavía — no afecta lo que el usuario ve. Riesgo a confirmar aquí (design.md §10): que `@testing-library/react` pueda consultar botones dentro de un `foreignObject` en jsdom.
 
-### [ ] T-05 — Plano: error, reintentar y aviso automático
+### [x] T-05 — Plano: error, reintentar y aviso automático
 
 - **Objetivo:** el plano muestra el mensaje de error con "Reintentar", y tanto ese mensaje como el de "sin puestos" se anuncian solos a un lector de pantalla.
 - **Criterios que cierra:** AC-10, AC-25.
