@@ -30,6 +30,13 @@ const FILAS = Math.ceil(CANTIDAD_PUESTOS / COLUMNAS);
 const FOCUS_RING =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent";
 
+const ESTILO_PUESTO: Record<EstadoAnuncioPuesto, string> = {
+  cargando: "border-border text-border",
+  libre: "border-foreground/60 text-foreground hover:bg-border/40",
+  ocupado: "border-dashed border-border bg-border/20 text-muted",
+  seleccionado: "border-accent bg-accent text-accent-foreground",
+};
+
 function posicion(indice: number): { x: number; y: number } {
   return { x: (indice % COLUMNAS) * CELDA, y: Math.floor(indice / COLUMNAS) * CELDA };
 }
@@ -113,6 +120,7 @@ export function PlanoPuestos({
 
   return (
     <div className="card" ref={contenedorRef} tabIndex={-1}>
+      <h2 className="mb-fluid-2xs text-fluid-sm font-medium">Selecciona un puesto</h2>
       {estado === "error" ? (
         <>
           <p role="status" className="text-fluid-sm text-muted">
@@ -151,7 +159,7 @@ export function PlanoPuestos({
               const { x, y } = posicion(indice);
 
               return (
-                <foreignObject key={id} x={x} y={y} width={CELDA} height={CELDA}>
+                <foreignObject key={id} x={x} y={y} width={CELDA} height={CELDA} className="p-2">
                   <button
                     type="button"
                     ref={(el) => {
@@ -163,10 +171,11 @@ export function PlanoPuestos({
                     tabIndex={!cargando && id === cursorEfectivo ? 0 : -1}
                     onClick={() => handleSeleccionar(id, libre)}
                     aria-label={anunciarPuesto(id, estadoAnuncio)}
-                    className={`flex h-full w-full items-center justify-center text-fluid-sm ${FOCUS_RING}`}
+                    className={`flex h-full w-full flex-col items-center justify-center gap-1 rounded-md border text-fluid-sm transition-colors ${ESTILO_PUESTO[estadoAnuncio]} ${FOCUS_RING}`}
                   >
-                    {!cargando && !libre ? "✕" : null}
-                    {!cargando && seleccionado ? "✓" : null}
+                    <span className="font-medium">{id}</span>
+                    {!cargando && !libre ? <span aria-hidden="true">✕</span> : null}
+                    {!cargando && seleccionado ? <span aria-hidden="true">✓</span> : null}
                   </button>
                 </foreignObject>
               );
