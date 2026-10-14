@@ -169,4 +169,39 @@ describe("ReservaFechaForm", () => {
     render(<ReservaFechaForm espacio={espacio} siguientePaso="resumen" />);
     expect(screen.queryByRole("img", { name: "Plano de puestos" })).not.toBeInTheDocument();
   });
+
+  it("AC-15: cambiar hora inicio elimina puestoId de la URL", () => {
+    currentParams = new URLSearchParams({
+      espacioId: "1",
+      fecha: FECHA_VALIDA,
+      horaInicio: "10:00",
+      horaFin: "12:00",
+      puestoId: "3",
+    });
+    render(<ReservaFechaForm espacio={espacio} siguientePaso="resumen" />);
+    fireEvent.change(screen.getByLabelText("Hora inicio"), { target: { value: "09:00" } });
+
+    const url = new URL(replace.mock.calls[0][0], "http://localhost");
+    expect(url.searchParams.has("puestoId")).toBe(false);
+  });
+
+  it("AC-21: el plano deja de renderizarse si el rango deja de ser válido", () => {
+    currentParams = new URLSearchParams({
+      espacioId: "1",
+      fecha: FECHA_VALIDA,
+      horaInicio: "10:00",
+      horaFin: "12:00",
+    });
+    const { rerender } = render(<ReservaFechaForm espacio={espacio} siguientePaso="resumen" />);
+    expect(screen.getByRole("img", { name: "Plano de puestos" })).toBeInTheDocument();
+
+    currentParams = new URLSearchParams({
+      espacioId: "1",
+      fecha: FECHA_VALIDA,
+      horaInicio: "15:00",
+      horaFin: "12:00", // ahora horaFin <= horaInicio: rango-invalido
+    });
+    rerender(<ReservaFechaForm espacio={espacio} siguientePaso="resumen" />);
+    expect(screen.queryByRole("img", { name: "Plano de puestos" })).not.toBeInTheDocument();
+  });
 });

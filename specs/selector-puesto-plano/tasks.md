@@ -138,7 +138,7 @@
   - `ReservaFechaForm.test.tsx`: `it("AC-23: no renderiza el plano de puestos con un campo de fecha/hora vacío")`
 - **Terminado cuando:** los tests de arriba, y los ya existentes en `ReservaFechaForm.test.tsx`, pasan, y `npm run test`, `npm run lint` y `npx tsc --noEmit` terminan sin errores. Esta es la primera tarea donde `PlanoPuestos` aparece de verdad en `/reserva/fecha` — a partir de acá la app en marcha ya lo muestra.
 
-### [ ] T-10 — `ReservaFechaForm`: limpiar `puestoId` al cambiar fecha u hora
+### [x] T-10 — `ReservaFechaForm`: limpiar `puestoId` al cambiar fecha u hora
 
 - **Objetivo:** cambiar la fecha, la hora de inicio o la hora de fin borra cualquier `puestoId` de la URL, y si el nuevo rango deja de ser válido, el plano desaparece.
 - **Criterios que cierra:** AC-15, AC-21.

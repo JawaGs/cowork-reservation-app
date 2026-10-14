@@ -44,6 +44,8 @@ export function ReservaFechaForm({ espacio, siguientePaso }: ReservaFechaFormPro
     if (campo === "horaInicio" && horaFin && horaFin <= valor) {
       params.delete("horaFin");
     }
+    // Un puesto elegido para el rango anterior no tiene sentido en uno nuevo (AC-15).
+    params.delete("puestoId");
     router.replace(`/reserva/fecha?${params.toString()}`);
   }
 
