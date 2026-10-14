@@ -127,7 +127,7 @@
   - `PlanoPuestos.test.tsx`: `it("AC-18: no llama a onSeleccionar si la petición de montaje falla")`
 - **Terminado cuando:** los tests de arriba (y los anteriores de `PlanoPuestos.test.tsx`) pasan, y `npm run test`, `npm run lint` y `npx tsc --noEmit` terminan sin errores. Con esto, `PlanoPuestos` queda completo — falta conectarlo.
 
-### [ ] T-09 — `ReservaFechaForm`: mostrar u ocultar el plano según tipo y validez
+### [x] T-09 — `ReservaFechaForm`: mostrar u ocultar el plano según tipo y validez
 
 - **Objetivo:** `/reserva/fecha` muestra `PlanoPuestos` solo para espacios `escritorio-flexible` con un rango válido; en cualquier otro caso, no se muestra nada.
 - **Criterios que cierra:** AC-01, AC-02, AC-23.

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DatePicker } from "@/components/DatePicker";
 import { LinkPendingLabel } from "@/components/LinkPendingLabel";
+import { PlanoPuestos } from "@/components/PlanoPuestos";
 import { TimeSelect } from "@/components/TimeSelect";
 import { calcularDuracionHoras, esDiaCompleto, validarReserva } from "@/lib/disponibilidad";
 import type { Espacio } from "@/lib/espacios";
@@ -32,6 +33,7 @@ export function ReservaFechaForm({ espacio, siguientePaso }: ReservaFechaFormPro
   const fecha = searchParams.get("fecha") ?? "";
   const horaInicio = searchParams.get("horaInicio") ?? "";
   const horaFin = searchParams.get("horaFin") ?? "";
+  const puestoId = searchParams.get("puestoId");
 
   function actualizar(campo: "fecha" | "horaInicio" | "horaFin", valor: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -45,11 +47,22 @@ export function ReservaFechaForm({ espacio, siguientePaso }: ReservaFechaFormPro
     router.replace(`/reserva/fecha?${params.toString()}`);
   }
 
+  function actualizarPuesto(puestoId: string | null) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (puestoId) {
+      params.set("puestoId", puestoId);
+    } else {
+      params.delete("puestoId");
+    }
+    router.replace(`/reserva/fecha?${params.toString()}`);
+  }
+
   const completo = Boolean(fecha && horaInicio && horaFin);
   const resultado = completo
     ? validarReserva(espacio, { fecha, horaInicio, horaFin })
     : null;
   const duracion = completo ? calcularDuracionHoras(horaInicio, horaFin) : null;
+  const rangoParaPuestos = resultado?.valido ? { fecha, horaInicio, horaFin } : null;
 
   return (
     <div className="flex flex-col gap-fluid-sm">
@@ -82,6 +95,15 @@ export function ReservaFechaForm({ espacio, siguientePaso }: ReservaFechaFormPro
         <p className="text-fluid-sm text-muted">
           Duración: {duracion}h{esDiaCompleto(duracion) ? " (tarifa día completo)" : ""}
         </p>
+      )}
+
+      {espacio.tipo === "escritorio-flexible" && (
+        <PlanoPuestos
+          espacioId={espacio.id}
+          rango={rangoParaPuestos}
+          puestoIdSeleccionado={puestoId}
+          onSeleccionar={actualizarPuesto}
+        />
       )}
 
       {resultado?.valido ? (

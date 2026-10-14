@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ReservaFechaForm } from "./ReservaFechaForm";
 import type { Espacio } from "@/lib/espacios";
 
@@ -40,6 +40,14 @@ const espacio: Espacio = {
 beforeEach(() => {
   replace.mockClear();
   currentParams = new URLSearchParams();
+  // PlanoPuestos (dentro de ReservaFechaForm cuando el rango es válido)
+  // dispara un fetch real por su cuenta; se deja pendiente para que estos
+  // tests, que no inspeccionan ese plano, no dependan de una red real.
+  vi.stubGlobal("fetch", vi.fn(() => new Promise(() => {})));
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
 });
 
 describe("ReservaFechaForm", () => {
@@ -126,5 +134,39 @@ describe("ReservaFechaForm", () => {
       "href",
       expect.stringContaining("/reserva/pago"),
     );
+  });
+
+  it("AC-01: no renderiza el plano de puestos si el espacio no es escritorio-flexible", () => {
+    currentParams = new URLSearchParams({
+      espacioId: "3",
+      fecha: FECHA_VALIDA,
+      horaInicio: "10:00",
+      horaFin: "12:00",
+    });
+    const salaReuniones: Espacio = { ...espacio, id: "3", tipo: "sala-reuniones" };
+    render(<ReservaFechaForm espacio={salaReuniones} siguientePaso="resumen" />);
+    expect(screen.queryByRole("img", { name: "Plano de puestos" })).not.toBeInTheDocument();
+  });
+
+  it("AC-02: no renderiza el plano de puestos con un dato de fecha/hora inválido", () => {
+    currentParams = new URLSearchParams({
+      espacioId: "1",
+      fecha: FECHA_OCUPADA,
+      horaInicio: "10:00",
+      horaFin: "11:00",
+    });
+    render(<ReservaFechaForm espacio={espacio} siguientePaso="resumen" />);
+    expect(screen.queryByRole("img", { name: "Plano de puestos" })).not.toBeInTheDocument();
+  });
+
+  it("AC-23: no renderiza el plano de puestos con un campo de fecha/hora vacío", () => {
+    currentParams = new URLSearchParams({
+      espacioId: "1",
+      fecha: FECHA_VALIDA,
+      horaInicio: "10:00",
+      // horaFin queda vacía a propósito.
+    });
+    render(<ReservaFechaForm espacio={espacio} siguientePaso="resumen" />);
+    expect(screen.queryByRole("img", { name: "Plano de puestos" })).not.toBeInTheDocument();
   });
 });
