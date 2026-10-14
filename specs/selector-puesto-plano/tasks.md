@@ -148,7 +148,7 @@
   - `ReservaFechaForm.test.tsx`: `it("AC-21: el plano deja de renderizarse si el rango deja de ser válido")`
 - **Terminado cuando:** los tests de arriba, y todos los ya existentes en `ReservaFechaForm.test.tsx`, pasan, y `npm run test`, `npm run lint` y `npx tsc --noEmit` terminan sin errores. Con esto, todos los criterios con verificación `test` quedan cerrados.
 
-### [ ] T-11 — Verificación visual: escala fluida y foco visible
+### [x] T-11 — Verificación visual: escala fluida y foco visible
 
 - **Objetivo:** confirmar en un navegador real, con el skill `run-cowork-reservation-app`, lo que ningún test automatizado puede comprobar.
 - **Criterios que cierra:** AC-13, AC-17.

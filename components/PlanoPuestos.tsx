@@ -23,6 +23,12 @@ interface PlanoPuestosProps {
 const COLUMNAS = 4;
 const CELDA = 100;
 const FILAS = Math.ceil(CANTIDAD_PUESTOS / COLUMNAS);
+// ring-inset: el botón llena todo su <foreignObject> y el <svg> padre
+// tiene overflow:hidden, así que un ring hacia afuera (el patrón normal
+// del resto de la app) queda recortado e invisible — tiene que dibujarse
+// hacia adentro para quedar dentro de los límites del propio botón.
+const FOCUS_RING =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent";
 
 function posicion(indice: number): { x: number; y: number } {
   return { x: (indice % COLUMNAS) * CELDA, y: Math.floor(indice / COLUMNAS) * CELDA };
@@ -157,7 +163,7 @@ export function PlanoPuestos({
                     tabIndex={!cargando && id === cursorEfectivo ? 0 : -1}
                     onClick={() => handleSeleccionar(id, libre)}
                     aria-label={anunciarPuesto(id, estadoAnuncio)}
-                    className="flex h-full w-full items-center justify-center text-fluid-sm"
+                    className={`flex h-full w-full items-center justify-center text-fluid-sm ${FOCUS_RING}`}
                   >
                     {!cargando && !libre ? "✕" : null}
                     {!cargando && seleccionado ? "✓" : null}
