@@ -69,7 +69,7 @@
   - `usePuestosDisponibilidad.test.ts`: "no dispara ninguna petición cuando el rango es null"
 - **Terminado cuando:** los tests de arriba pasan (`renderHook` de `@testing-library/react`, `fetch` mockeado con `vi.stubGlobal`), y `npm run test`, `npm run lint` y `npx tsc --noEmit` terminan sin errores. El hook existe pero ningún componente lo usa todavía.
 
-### [ ] T-04 — Plano: carga, disponibilidad y sin puestos libres
+### [x] T-04 — Plano: carga, disponibilidad y sin puestos libres
 
 - **Objetivo:** `PlanoPuestos` existe, muestra el estado de carga y, al resolver, cada puesto según su disponibilidad real (incluido el caso de los 8 ocupados).
 - **Criterios que cierra:** AC-03, AC-04, AC-08.
